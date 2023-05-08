@@ -1,0 +1,94 @@
+.headContainer {
+    width: 99.9vw;
+    height:6vh;
+    margin-left: -0.4%;
+    margin-top: -0.4%;
+    box-shadow: 2px 2px 2px 2px rgb(211, 114, 114);
+    background-color: rgb(184, 184, 184);
+}
+.BrandHeading {
+    font-family: cursive;
+    text-shadow: 2px 1px 5px lightcoral;
+    font-weight: 400;
+    color: rgb(63, 46, 2);
+    font-size: 1.9rem;
+    opacity: 0.7;
+    padding-left: 0.5%;
+    padding-top: 0.5%;
+    margin: auto;
+}
+.headContainer > input {
+    position: absolute;
+    margin-left: 20%;
+    margin-top: -1.7%;
+    padding-left: 2%;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    width: 40vw;
+    height: 4vh;
+}
+.logoutbtn {
+    position: absolute;
+    margin-left: 90%;
+    margin-top: -1.7%;
+    width: 8%;
+    height: 4vh;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    box-shadow: 1px 4px 10px 6px gray;
+    background-color: goldenrod;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: cursive;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.logoutbtn:hover {
+    transform:translateY(-4px);
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(236, 169, 124, 0.719);
+    margin-left: 85%;
+    width: 15vw;
+    border-radius: 10px;
+    height: 90vh;
+    margin-top: 0.5%;
+}
+.main > a{
+    text-decoration: none;
+    width: 50%;
+    margin-left: 1%;
+    color: rgb(75, 74, 74);
+    border: 1px solid rgb(92, 91, 91);
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2vmax 2vmax;
+    margin: 2vmax 2vmax 2vmax;
+}
+.catheading {
+    margin-left: 0%;
+    text-align: end;
+    font-size: 1.8rem;
+    font-weight: 400;
+    border-bottom: 2px solid rgb(99, 97, 97);
+}
+.main > ul > li {
+    text-align: end;
+    list-style: none;
+    font-size: 1.5rem;
+    margin-left: -13%;
+    cursor: pointer;
+    padding: 1vmax;
+    border-bottom: 1px solid gainsboro;
+    transition: all 0.5s;
+}
+.main > ul > li:hover {
+    transform: translateY(-5px);
+}

@@ -1,0 +1,17 @@
+{
+  "name": "shopback",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.1.0",
+    "nodemon": "^2.0.22"
+  }
+}

@@ -1,0 +1,120 @@
+.AddFormContainer {
+    position: absolute;
+    border: none;
+    margin-left: 30%;
+    margin-top: -44%;
+    box-shadow: 2px 5px 20px 5px lightcoral ;
+    width: 30vw;
+    height: 70vh;
+    background-color: white;
+}
+.AddForm {
+    display: flex;
+    width: 30vw;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(226, 211, 178, 0.753);
+    height: 70vh;
+    border-radius: 0;
+    justify-content: space-evenly;
+}
+.AddHeading {
+    border-bottom: 1px solid;
+    text-align: center;
+}
+.productName {
+    width: 100%;
+    height: 4vh;
+    text-align: center;
+}
+.productName > input {
+    margin-top: 0.4%;
+    padding-left: 2%;
+    height: 3vh;
+    width: 20vw;
+    outline: none;
+    border: none;
+    font-size: 0.9rem;
+}
+.productDescription {
+    width: 100%;
+    height: 4vh;
+    text-align: center;
+}
+.productDescription > input {
+    margin-top: 0.4%;
+    padding-left: 2%;
+    height: 3vh;
+    width: 20vw;
+    outline: none;
+    border: none;
+    font-size: 0.9rem;
+}
+.productCategory {
+    width: 100%;
+    height: 4vh;
+    text-align: center;
+}
+.productCategory > select {
+    margin-top: 0.4%;
+    padding-left: 2%;
+    height: 3vh;
+    width: 20.8vw;
+    outline: none;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.productQuantity {
+    width: 100%;
+    height: 4vh;
+    text-align: center;
+}
+.productQuantity > input {
+    margin-top: 0.4%;
+    padding-left: 2%;
+    height: 3vh;
+    width: 20vw;
+    outline: none;
+    border: none;
+    font-size: 0.9rem;
+}
+.productStock {
+    width: 100%;
+    height: 4vh;
+    text-align: center;
+}
+.productStock > input {
+    margin-top: 0.4%;
+    padding-left: 2%;
+    height: 3vh;
+    width: 20vw;
+    outline: none;
+    border: none;
+    font-size: 0.9rem;
+}
+.productPrice {
+    width: 100%;
+    height: 4vh;
+    text-align: center;
+}
+.productPrice > input {
+    margin-top: 0.4%;
+    padding-left: 2%;
+    height: 3vh;
+    width: 20vw;
+    outline: none;
+    border: none;
+    font-size: 0.9rem;
+}
+.AddPro {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    height: 4vh;
+    width: 10vw;
+    font-weight: 500;
+    font-size: 1.3rem;
+    border-radius: 2px;
+    background-color: lightsteelblue;
+}

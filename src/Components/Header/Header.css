@@ -3,7 +3,7 @@
     height:6vh;
     margin-left: -0.4%;
     margin-top: -0.4%;
-    box-shadow: 2px 2px 2px 2px rgb(211, 114, 114);
+    box-shadow: 2px 2px 2px 2px rgb(99, 4, 4);
     background-color: rgb(184, 184, 184);
 }
 .BrandHeading {
@@ -38,7 +38,7 @@
     border: none;
     outline: none;
     border-radius: 5px;
-    box-shadow: 1px 4px 10px 6px gray;
+    box-shadow: 1px 4px  6px gray;
     background-color: goldenrod;
     font-size: 1.2rem;
     font-weight: 600;

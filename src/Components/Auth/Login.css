@@ -8,6 +8,15 @@
     margin: auto;
     margin-top: 10%;
 }
+.loginContainer {
+    filter: drop-shadow(0 40px 10px rgba(0,0,0,0.3));
+    animation: vectoranimation 1s infinite ease-in-out alternate;
+}
+@keyframes vectoranimation {
+    to{
+        transform: translateY(-10px);
+    }
+}
 form {
     border-radius: 5px;
      border: none;

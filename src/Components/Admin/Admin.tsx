@@ -4,201 +4,253 @@ import axios from 'axios';
 import URI from '../Config/config';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { Box, Button, Modal } from '@mui/material';
 
-const Admin = () => {
-    const navigate = useNavigate()
-    const [user,setUser] = useState([]);
-    const [name,setName] =useState <string>('');
-    const [email,setEmail] = useState <string>('');
-    const [address,setAddress] = useState <string>('');
-    const [role,setRole] = useState <string>('');
-    const [phoneNo,setPhoneNo] = useState<string>();
 
-    const onchange =(e:any) =>{
+
+const UserModal = (props:{openPopUp:any}) => {
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+    const [open, setOpen] = React.useState(false);
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [address, setAddress] = useState<string>('');
+    const [role, setRole] = useState<string>('');
+    const [phoneNo, setPhoneNo] = useState<string>();
+     // eslint-disable-next-line
+
+
+
+    const onchange = (e: any) => {
         const keyCode = e.keyCode || e.which;
         const keyValue = String.fromCharCode(keyCode);
         const isValid = new RegExp("[0-9]").test(keyValue);
         if (!isValid) {
-           e.preventDefault();
-           setPhoneNo(e.target.value)
-           return;
+            e.preventDefault();
+            setPhoneNo(e.target.value)
+            return;
         }
     };
-    const reset =()=>{
+
+    const adduserFormHandler = async (e: any) => {
+        e.preventDefault();
+        let user = await axios.post(`${URI}/api/register`, {
+            name, email, address, role, phoneNo
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            }
+        });
+        if (user.data.success === true) {
+            toast.success(user.data.message)
+            reset()
+            props.openPopUp({})
+            setOpen(false)
+        }
+
+     
+    };
+    const reset = () => {
         setName('');
         setEmail('');
         setAddress('');
         setRole('');
         setPhoneNo('')
     }
-    const adduserFormHandler = async(e:any) =>{
+    const handleOpen = () => setOpen(true);
+    const HandleClose = () => {
+        setOpen(false)
+       
+    }
+ 
+
+    return (
+
+        <Fragment>
+            <Button className='addUserbtn' onClick={handleOpen} style={{
+                border: 'none',
+                margin: 'auto',
+                marginLeft: '5%',
+                position: 'absolute',
+                marginTop: '10%',
+                width: '10%',
+                height: '5vh',
+                backgroundColor: '#f3caca',
+                color: 'black'
+            }}>Add User</Button>
+            <Modal
+                className='MuiBox-root css-1wnsr1i '
+                open={open}
+
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <div className="adduser" id='adduser'>
+                        <form className="addUser" onSubmit={adduserFormHandler}>
+                            <h3>Add User <button className='close' type='button' onClick={HandleClose} >ⓧ</button></h3>
+                            <div className="name">
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder='Enter Name'
+                                    value={name}
+                                    onChange={(e: any) => setName(e.target.value)}
+                                />
+                            </div>
+                            <div className="email">
+                                <input
+                                    type="email"
+                                    required
+                                    placeholder='Enter Email'
+                                    value={email}
+                                    onChange={(e: any) => setEmail(e.target.value)}
+                                />
+                            </div>
+                            <div className="address">
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder='Enter Address'
+                                    value={address}
+                                    onChange={(e: any) => setAddress(e.target.value)}
+                                />
+                            </div>
+                            <div className="role">
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder='Enter Role'
+                                    value={role}
+                                    onChange={(e: any) => setRole(e.target.value)}
+                                />
+                            </div>
+                            <div className="phoneNo">
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder='Enter PhoneNo'
+                                    value={phoneNo}
+                                    maxLength={10}
+                                    onChange={onchange}
+                                />
+                            </div>
+                            <button className='adminbtn' type='submit'>Add</button>
+                        </form>
+                    </div>
+                </Box>
+            </Modal>
+
+        </Fragment>
+    )
+}
+
+
+const Admin = () => {
+    const navigate = useNavigate()
+    const [user, setUser] = useState([]);
+
+
+
+
+
+    useEffect(() => {
+        async function fetchUser() {
+            await axios.get(`${URI}/api/users`, {
+                headers: {
+                    'Authorization': localStorage.getItem('token')
+                }
+            }).then(res => res.data.user)
+                .then(
+                    (users) => {
+                        setUser(users)
+                    },
+                    (error) => {
+                        toast.error(error)
+                    }
+                )
+
+        };
+        fetchUser();
+    }, []);
+
+    const logoutHandler = async (e: any) => {
         e.preventDefault();
-        let user = await axios.post(`${URI}/api/register`,{
-            name,email,address,role,phoneNo
-        },{
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':localStorage.getItem('token')
+        let logy = await axios.get(`${URI}/api/logout`, {
+            headers: {
+                'Authorization': localStorage.getItem('token')
             }
         });
-        if(user.data.success===true){
-            toast.success(user.data.message)
-            reset()
+        if (logy.data.success === true) {
+            toast.success(logy.data.message)
+            localStorage.removeItem('token')
+            navigate('/')
         }
-
-        async function fetchUser(){
-            await axios.get(`${URI}/api/users`,{
-                headers:{
-                    'Authorization':localStorage.getItem('token')
-                }
-            }).then(res=>res.data.user)
-            .then(
-                (users)=>{
-                    setUser(users)
-                },
-                (error)=>{
-                    toast.error(error)
-                }
-                )
-                
-            };
-            fetchUser();
-    };
-    useEffect(()=>{
-        async function fetchUser(){
-            await axios.get(`${URI}/api/users`,{
-                headers:{
-                    'Authorization':localStorage.getItem('token')
-                }
-            }).then(res=>res.data.user)
-            .then(
-                (users)=>{
-                    setUser(users)
-                },
-                (error)=>{
-                    toast.error(error)
-                }
-                )
-                
-            };
-            fetchUser();
-        },[]);
-
-        const logoutHandler = async(e:any) =>{
-            e.preventDefault();
-            let logy = await axios.get(`${URI}/api/logout`,{
-                headers:{
-                    'Authorization':localStorage.getItem('token')
-                }
-            });
-            if(logy.data.success===true){
-                toast.success(logy.data.message)
-                localStorage.removeItem('token')
-                navigate('/')
+    }
+    const openPopUp = async() => {
+        await axios.get(`${URI}/api/users`, {
+            headers: {
+                'Authorization': localStorage.getItem('token')
             }
-        }
-        let register = document.getElementById('registers')
-        let add = document.getElementById('adduser')
-        const openPopUp = () =>{
-            add?.classList.add('add')
-            register?.classList.remove('register')
-        }
-        const closePopUp = () => {
-            add?.classList.remove('add')
-            register?.classList.add('register')
-        }
-        return (
-    <Fragment>
-        <div className="adminContainer">
-            <h3 className="adminheading">SHOP MANAGEMENT ADMIN
-            <button className='admbtn' onClick={logoutHandler}>Logout</button></h3>
-            <div className="maincontainer">
-            <div className="add">
-    <div className="adduser" id='adduser'>
-        <form  className="addUser" onSubmit={adduserFormHandler}>
-            <h3>Add User <button className='close' type='button' onClick={closePopUp}>ⓧ</button></h3>
-            <div className="name">
-                <input 
-                    type="text"
-                    required
-                    placeholder='Enter Name' 
-                    value={name}
-                    onChange={(e:any)=>setName(e.target.value)}
-                    />
-            </div>
-            <div className="email">
-                <input 
-                    type="email"
-                    required
-                    placeholder='Enter Email' 
-                    value={email}
-                    onChange={(e:any)=>setEmail(e.target.value)}
-                    />
-            </div>
-            <div className="address">
-                <input 
-                    type="text"
-                    required
-                    placeholder='Enter Address' 
-                    value={address}
-                    onChange={(e:any)=>setAddress(e.target.value)}
-                    />
-            </div>
-            <div className="role">
-                <input 
-                    type="text"
-                    required
-                    placeholder='Enter Role' 
-                    value={role}
-                    onChange={(e:any)=>setRole(e.target.value)}
-                    />
-            </div>
-            <div className="phoneNo">
-                <input 
-                    type="text"
-                    required
-                    placeholder='Enter PhoneNo' 
-                    value={phoneNo}
-                    maxLength={10}
-                    onKeyPress={onchange}
-                    />
-            </div>
-            <button className='adminbtn' type='submit'>Add</button>
-        </form>
-    </div>
-    </div>
-                <div className="reg">
-                <button className='register' id='registers' onClick={openPopUp}>AddUser</button>
-                </div>
-                <div className="tab">
-                    <h3>User Records</h3>
-                    <table className='admintable'>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Address</th>
-                            <th>Role</th>
-                            <th>PhoneNo</th>
-                        </tr>
-                        <tbody>
-                         {  user.length>0&&
-                            user.map((users:any)=>(
-                                <tr key={users._id}>
-                                <td>{users.name}</td>
-                                <td>{users.email}</td>
-                                <td>{users.address}</td>
-                                <td>{users.role}</td>
-                                <td>{users.phoneNo}</td>
+        }).then(res => res.data.user)
+            .then(
+                (users) => {
+                    setUser(users)
+                },
+                (error) => {
+                    toast.error(error)
+                }
+            )
+    }
+
+    return (
+        <Fragment>
+            <div className="adminContainer">
+                <h3 className="adminheading">SHOP MANAGEMENT ADMIN
+                    <button className='admbtn' onClick={logoutHandler}>Logout</button></h3>
+                <div className="maincontainer">
+                    <UserModal openPopUp={openPopUp}/>
+
+                    <button className='register' id='registers' >AddUser</button>
+                    <div className="tab">
+                        <h3>User Records</h3>
+                        <table className='admintable'>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Role</th>
+                                <th>PhoneNo</th>
                             </tr>
-                            ))
-                         }
-                        </tbody>
-                    </table>
+                            <tbody>
+                                {user.length > 0 &&
+                                    user.map((users: any) => (
+                                        <tr key={users._id}>
+                                            <td>{users.name}</td>
+                                            <td>{users.email}</td>
+                                            <td>{users.address}</td>
+                                            <td>{users.role}</td>
+                                            <td>{users.phoneNo}</td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </Fragment>
-  )
+        </Fragment>
+    )
 }
 
 export default Admin;

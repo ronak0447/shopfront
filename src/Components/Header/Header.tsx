@@ -9,8 +9,6 @@ interface HeaderProps {
   keyword?:string;
   setkeyword?: React.Dispatch<React.SetStateAction<string>> ;
   setCategory?: React.Dispatch<React.SetStateAction<string>>;
-  setUpdateValue?:React.Dispatch<React.SetStateAction<object>>
-  reset?:() => void
 }
 
 
@@ -40,7 +38,7 @@ const Header = (props:HeaderProps) => {
                 />
             <button type='button' className='logoutbtn' onClick={logoutHandler}>Logout</button>    
         </div>
-        <SideBar setCategory={props.setCategory} setUpdateValue={props.setUpdateValue} reset={props.reset}/>
+        <SideBar setCategory={props.setCategory}/>
     </Fragment>
   )
 }

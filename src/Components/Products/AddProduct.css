@@ -1,4 +1,4 @@
-.AddFormContainer {
+/* .AddFormContainer {
     position: absolute;
     border: none;
     margin-left: 30%;
@@ -7,8 +7,8 @@
     width: 30vw;
     height: 70vh;
     background-color: white;
-}
-.AddForm {
+} */
+/* .AddForm {
     display: flex;
     width: 30vw;
     flex-direction: column;
@@ -17,10 +17,11 @@
     height: 70vh;
     border-radius: 0;
     justify-content: space-evenly;
-}
+} */
 .AddHeading {
     border-bottom: 1px solid;
     text-align: center;
+    cursor: pointer;
 }
 .productName {
     width: 100%;

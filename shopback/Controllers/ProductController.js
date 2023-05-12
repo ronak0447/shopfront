@@ -68,13 +68,15 @@ export const deleteProduct = async(req,res)=>{
 };
 
 //Get All Products
-export const getAllProducts =async(req,res)=>{
+export const getAllProducts = async(req,res)=>{
 
    try {
     const keyword = req.query.keyword || "";
     const category = req.query.category || "";
 
-    const product = await Product.find({
+    const resultPerPage = 10;
+    const productsCount = await Product.countDocuments();
+    const product = await  Product.find({
         productname:{
             $regex:keyword,
             $options:"i",
@@ -89,7 +91,9 @@ export const getAllProducts =async(req,res)=>{
     return;}
     res.status(200).json({
         success:true,
-        product
+        product,
+        productsCount,
+        resultPerPage
     });
    } catch (error) {
     res.status(500).json({

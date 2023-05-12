@@ -6,7 +6,7 @@ import axios from 'axios';
 import URI from '../Config/config';
 import { toast } from 'react-hot-toast';
 import { Box, Button, Modal } from '@mui/material';
-
+import ReactPaginate from 'react-paginate';
 
 interface UpdateObject {
   _id?:string,    
@@ -219,11 +219,13 @@ const Products = (props:updatePop) => {
   const [keyword,setKeyword] = useState<string>('');
   const [category,setCategory]= useState<string>('');
   const [product,setProduct] = useState([]);
-  const [isUpdated,setIsUpdated] = useState(false)
+  const [isUpdated,setIsUpdated] = useState(false);
+  const [currentPage,setCurrentPage] = useState(1);
   const [isData,setIsData] = useState({});
+  const PER_PAGE = 10
   useEffect(()=>{
     async function fetchdata(){
-      await axios.get(`${URI}/api/products?keyword=${keyword}&category=${category}`,{
+      await axios.get(`${URI}/api/products?keyword=${keyword}&category=${category}&page=${currentPage}`,{
         headers:{
           'Authorization':localStorage.getItem('token'),
         }
@@ -237,7 +239,7 @@ const Products = (props:updatePop) => {
       )
     };
     fetchdata();
-  },[keyword,category])
+  },[keyword,category,currentPage])
 
   const deleteProductHandler =async(id:string)=>{
     let del = await axios.delete(`${URI}/api/deleteproduct/${id}`,{
@@ -245,6 +247,7 @@ const Products = (props:updatePop) => {
         'Authorization':localStorage.getItem('token'),
       }
     })
+    console.log(id)
     if(del.data.success===true){
       toast.success(del.data.message)
     }
@@ -288,6 +291,10 @@ const Products = (props:updatePop) => {
     };
     fetchdata();
   }
+  // function handlePageClick({ selected: selectedPage }) {
+  //   setCurrentPage(selectedPage);
+  // }
+  const pageCount = Math.ceil(product.length / PER_PAGE);
   return (
     <Fragment>
         <Header keyword={keyword} setkeyword={setKeyword} setCategory={setCategory}/>
@@ -323,6 +330,17 @@ const Products = (props:updatePop) => {
             }
           </tbody>
         </table>
+        <ReactPaginate
+          previousLabel={"← Previous"}
+          nextLabel={"Next →"}
+          pageCount={pageCount}
+          // onPageChange={handlePageClick}
+          containerClassName={"pagination"}
+          previousLinkClassName={"pagination__link"}
+          nextLinkClassName={"pagination__link"}
+          disabledClassName={"pagination__link--disabled"}
+          activeClassName={"pagination__link--active"}
+        />
     </Fragment>
   )
 }

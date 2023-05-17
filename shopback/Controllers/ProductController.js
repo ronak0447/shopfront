@@ -97,7 +97,7 @@ export const getAllProducts = async(req,res)=>{
     res.status(200).json({ 
         success:true,
         page: pageNumber,
-        pageSize,
+        pageSize, 
         total: noOfPage, 
         product,
     });

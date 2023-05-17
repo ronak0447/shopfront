@@ -215,8 +215,9 @@ interface updatePop {
 
 interface Product {
   productname: string;
-  createdAt:Date
+  createdAt: Date
   // Other properties...
+  [key: string]: any;
 }
 const Products = (props: updatePop) => {
 
@@ -226,28 +227,32 @@ const Products = (props: updatePop) => {
   const [isUpdated, setIsUpdated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isData, setIsData] = useState({});
-  // const [pageSize,setPageSize] = useState(10);
+  const [dataOrder, setDataOrder] = useState('random');
   const [totalRecords, setTotalRecords] = useState(0);
   const pageSize = 10;
+
+
+  const fetchdata = async () => {
+    try {
+
+      const response = await axios.get(`${URI}/api/products?page=${currentPage}&pageSize=${pageSize}&keyword=${keyword}&category=${category}`, {
+        headers: {
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      const { product, total } = response.data;
+      setTotalRecords(total);
+      setProduct(product);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchdata = async () => {
-      try {
-    
-        const response = await axios.get(`${URI}/api/products?page=${currentPage}&pageSize=${pageSize}&keyword=${keyword}&category=${category}`, {
-          headers: {
-            'Authorization': localStorage.getItem('token')
-          }
-        });
-        const { product,total } = response.data;
-        setTotalRecords(total);
-        setProduct(product);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+
     fetchdata();
     // eslint-disable-next-line 
-  }, [keyword, category, currentPage,pageSize])
+  }, [keyword, category, currentPage, pageSize])
 
   const deleteProductHandler = async (_id: string) => {
     let del = await axios.delete(`${URI}/api/deleteproduct/${_id}`, {
@@ -255,7 +260,6 @@ const Products = (props: updatePop) => {
         'Authorization': localStorage.getItem('token'),
       }
     })
-    console.log(_id)
     if (del.data.success === true) {
       toast.success(del.data.message)
     }
@@ -264,8 +268,8 @@ const Products = (props: updatePop) => {
         headers: {
           'Authorization': localStorage.getItem('token'),
         }
-      }) ;
-      const { product,total } = response.data;
+      });
+      const { product, total } = response.data;
       setTotalRecords(total);
       setProduct(product);
     };
@@ -297,7 +301,7 @@ const Products = (props: updatePop) => {
   }
   const prevDisabled = currentPage === 1;
   const nextDisabled = currentPage === totalRecords;
-  const handlePageChange = (newPage:any) => {
+  const handlePageChange = (newPage: any) => {
     setCurrentPage(newPage)
   }
   const handlePreviousPage = () => {
@@ -320,12 +324,24 @@ const Products = (props: updatePop) => {
     'Footewear'
   ]
 
-  const handleSort = () =>{
-      let data = [...product]
-      if(data.length>0){
-        let result = data.sort((a,b)=>a.productname.localeCompare(b.productname))
+  const handleSort = (name: string) => {
+    let data = [...product]
+    if (dataOrder === 'random') {
+      if (data.length > 0) {
+        let result = data.sort((a, b) => a[name].localeCompare(b[name]))
         setProduct(result)
       }
+      setDataOrder('asc')
+    } else if (dataOrder === 'asc') {
+      if (data.length > 0) {
+        let result = data.sort((a, b) => b[name].localeCompare(a[name]));
+        setProduct(result);
+      }
+      setDataOrder('dsc')
+    } else {
+      fetchdata();
+      setDataOrder('random')
+    }
   }
   const handleSorti = () => {
     const sortedProducts = [...product].sort((a, b) => {
@@ -334,29 +350,28 @@ const Products = (props: updatePop) => {
       return createdAtB.getTime() - createdAtA.getTime();
     });
     setProduct(sortedProducts);
-    console.log(sortedProducts);
   };
-  
+
   return (
     <Fragment>
       <Header keyword={keyword} setkeyword={setKeyword} setCategory={setCategory} />
       <h3 className="producthead" onClick={fetchPro}>All Products
         <select onChange={(e) => setCategory(e.target.value)} style={{
-              marginLeft: '25%',
-              marginTop: '0%',
-              position: 'absolute',
-              border: 'none',
-              outline: 'none',
-              height: '3vh',
-              color: 'black',
-              backgroundColor: 'lavenderblush',
-              boxShadow: '2px 2px 6px',
-              borderRadius:' 4px',
-              fontSize: '0.9rem',
-              cursor: 'pointer',
+          marginLeft: '25%',
+          marginTop: '0%',
+          position: 'absolute',
+          border: 'none',
+          outline: 'none',
+          height: '3vh',
+          color: 'black',
+          backgroundColor: 'lavenderblush',
+          boxShadow: '2px 2px 6px',
+          borderRadius: ' 4px',
+          fontSize: '0.9rem',
+          cursor: 'pointer',
         }}>
           <option value={category} style={{
-            cursor:'pointer',backgroundColor:'transparent'
+            cursor: 'pointer', backgroundColor: 'transparent'
           }}>Select Category</option>
           {
             categories &&
@@ -368,10 +383,10 @@ const Products = (props: updatePop) => {
       </h3>
       <AddProduct isUpdated={isUpdated} setIsUpdated={setIsUpdated} isData={isData} setIsData={setIsData} fetchPro={fetchPro} />
       <table>
-        <tr style={{cursor:'pointer'}}>
-          <th onClick={handleSort}>ProductName</th>
-          <th>Description</th>
-          <th>Category</th>
+        <tr style={{ cursor: 'pointer' }}>
+          <th onClick={() => handleSort('productname')}>ProductName</th>
+          <th onClick={() => handleSort('description')}>Description</th>
+          <th onClick={() => handleSort('category')}>Category</th>
           <th>Quantity</th>
           <th>Stock</th>
           <th>Price</th>
@@ -382,19 +397,20 @@ const Products = (props: updatePop) => {
           {
             product.length > 0 &&
             product.map((products: any) => {
-              return(
-              <tr key={products._id}>
-                <td>{products.productname}</td>
-                <td>{products.description}</td>
-                <td>{products.category}</td>
-                <td>{products.quantity}</td>
-                <td>{products.Stock}</td>
-                <td>{products.price}</td>
-                <td>{products.createdAt.split('T')[0]}</td>
-                <td><button className='update' onClick={() => updateProductHandler(products._id, products)}>Update</button></td>
-                <td><button className='delete' onClick={() => deleteProductHandler(products._id)}>Delete</button></td>
-              </tr>
-            )})
+              return (
+                <tr key={products._id}>
+                  <td>{products.productname}</td>
+                  <td>{products.description}</td>
+                  <td>{products.category}</td>
+                  <td>{products.quantity}</td>
+                  <td>{products.Stock}</td>
+                  <td>{products.price}</td>
+                  <td>{products.createdAt.split('T')[0]}</td>
+                  <td><button className='update' onClick={() => updateProductHandler(products._id, products)}>Update</button></td>
+                  <td><button className='delete' onClick={() => deleteProductHandler(products._id)}>Delete</button></td>
+                </tr>
+              )
+            })
           }
         </tbody>
 
@@ -406,14 +422,16 @@ const Products = (props: updatePop) => {
           disabled={prevDisabled}
         >Prev</button>
         <div className="pages">
-       {
-         Array.from({length:totalRecords},(_,i)=>{
-          return(
-            <button key={i} onClick={()=>handlePageChange(i+1)}>
-              { i+1}
-            </button>
-          )})
-       }
+
+          {
+            Array.from({ length: totalRecords }, (_, i) => {
+              return (
+                <button key={i} onClick={() => handlePageChange(i + 1)}>
+                  {i + 1}
+                </button>
+              )
+            })
+          }
         </div>
         <button
           className='next'

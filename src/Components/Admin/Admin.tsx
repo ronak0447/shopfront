@@ -157,6 +157,7 @@ const UserModal = (props: { openPopUp: any }) => {
 interface User {
     role: string;
     name:string
+    [key: string]: any;
 }
 
 const Admin = () => {
@@ -164,25 +165,29 @@ const Admin = () => {
     const [user, setUser] = useState<User[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const [dataSorted,setDataSorted] = useState('random');
     const pageSize = 10
 
 
+    const fetchdata = async () => {
+        try {
+            const response = await axios.get(`${URI}/api/users?page=${currentPage}&pageSize=${pageSize}`, {
+                headers: {
+                    'Authorization': localStorage.getItem('token')
+                }
+            });
+            const { user,total } = response.data;
+            setTotalPages(total);
+            setUser(user);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
     useEffect(() => {
-        const fetchdata = async () => {
-            try {
-                const response = await axios.get(`${URI}/api/users?page=${currentPage}&pageSize=${pageSize}`, {
-                    headers: {
-                        'Authorization': localStorage.getItem('token')
-                    }
-                });
-                const { user,total } = response.data;
-                setTotalPages(total);
-                setUser(user);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+       
         fetchdata();
+            // eslint-disable-next-line 
     }, [currentPage,pageSize]);
 
     const logoutHandler = async (e: any) => {
@@ -230,13 +235,24 @@ const Admin = () => {
     }
     
 
-    const handleSort = () =>{
+    const handleSort = (name:string) =>{
        let data = [...user]
-       if(data.length>0){
-         let result = data.sort((a,b)=>a.name.localeCompare(b.name))
-       
-         setUser(result)
-       }
+      if(dataSorted==='random'){
+        if(data.length>0){
+            let result = data.sort((a,b)=>a[name].localeCompare(b[name]))
+            setUser(result)
+          }
+          setDataSorted('asc')
+      }else if(dataSorted==='asc'){
+        if(data.length>0){
+            let result = data.sort((a,b)=>b[name].localeCompare(a[name]))
+            setUser(result)
+          }
+          setDataSorted('dsc')
+      }else{
+        fetchdata();
+        setDataSorted('random')
+      }
    }
    const handleRole = () =>{
     let data = [...user]
@@ -258,9 +274,9 @@ const Admin = () => {
                         <h3>User Records</h3>
                         <table className='admintable'>
                             <tr style={{cursor:'pointer'}}>
-                                <th onClick={handleSort}>Name</th>
-                                <th>Email</th>
-                                <th>Address</th>
+                                <th onClick={()=>handleSort('name')}>Name</th>
+                                <th onClick={()=>handleSort('email')}>Email</th>
+                                <th onClick={()=>handleSort('address')}>Address</th>
                                 <th onClick={handleRole}>Role</th>
                                 <th>PhoneNo</th>
                             </tr>

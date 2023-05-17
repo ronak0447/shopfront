@@ -13,6 +13,7 @@
     text-align: center;
     cursor: pointer;
 }
+
 table {
     border: 1px solid gainsboro;
     width: 75vw;
@@ -23,13 +24,16 @@ table {
     border-radius: 5px;
     box-sizing: border-box;
     box-shadow: 2px 2px 10px;
+    line-height: 2;
 }
+
 td {
     border-right: 1px solid gainsboro;
     border-bottom: 1px solid gainsboro;
     /* border-left: 1px solid gainsboro; */
     border-top: 1px solid gainsboro;
 }
+
 .update {
     color: white;
     background-color: goldenrod;
@@ -42,6 +46,7 @@ td {
     margin-bottom: 0.5%;
     cursor: pointer;
 }
+
 .delete {
     color: white;
     background-color: goldenrod;
@@ -54,6 +59,7 @@ td {
     margin-bottom: 0.5%;
     cursor: pointer;
 }
+
 .AddFormContainer {
     position: absolute;
     border: none;
@@ -88,44 +94,86 @@ td {
     width: 400px;
     background-color: #fff;
     border: 2px solid #000;
-    box-shadow: 0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12);
+    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
     padding: 32px;
 }
-.pagination {
-    display: flex;
-    justify-content: center;
-    list-style: none;
-    cursor: pointer;
-    margin-top: 20%;
-    margin-left: 16%;
-    border: 1px solid;
-    width: 50%;
-    height: 4vh;
-    padding-top: 1%;
-}
-  
-  .pagination a {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #6c7ac9;
-    color: #6c7ac9;
-  }
-  
-  .pagination__link {
-    font-weight: bold;
-  }
-  .pagination__link--active {
-    margin-left: 3%;
-  }
-    ul > li {
+
+.footer {
     margin-left: 2%;
-  }
-  .pagination__link--active a {
-    color: #fff;
-    background: #6c7ac9;
-  }
-  
-  .pagination__link--disabled a {
-    color: rgb(198, 197, 202);
-    border: 1px solid rgb(198, 197, 202);
-  } 
+    margin-top: 16%;
+    width: 84%;
+    height: 4vh;
+    text-align: center;
+    padding-top: 1%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.prev {
+    margin-right: 0%;
+    margin-top: -1.5%;
+    border: none;
+    outline: none;
+    background-color: darksalmon;
+    height: 3vh;
+    width: 3vw;
+    font-size: 0.9rem;
+    border-bottom-left-radius: 17px;
+    border-top-left-radius: 17px;
+    color: black;
+    cursor: pointer;
+}
+
+.prev:hover {
+    background-color: lightcyan;
+}
+
+.pages {
+    display: flex;
+    flex-direction: row;
+    width: 15%;
+    overflow: auto;
+    margin-left: 0%;
+    margin-top: -1.7%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.pages > button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: black;
+    background-color: gainsboro;
+    border-radius: 5px;
+    height: 2.5vh;
+    width: 1.5vw;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.pages > button:active {
+    background-color: salmon;
+}
+.pages > button:hover {
+    background-color: salmon;
+}
+.next {
+    margin-left: 18%;
+    position: absolute;
+    margin-top: -1.3%;
+    border: none;
+    outline: none;
+    height: 3vh;
+    width: 3vw;
+    font-size: 0.9rem;
+    border-bottom-right-radius: 17px;
+    border-top-right-radius: 17px;
+    background-color: darksalmon;
+    color: black;
+    cursor: pointer;
+}
+.next:hover {
+    background-color: lightcyan;
+}

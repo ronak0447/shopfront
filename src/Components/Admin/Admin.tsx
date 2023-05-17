@@ -8,7 +8,7 @@ import { Box, Button, Modal } from '@mui/material';
 
 
 
-const UserModal = (props:{openPopUp:any}) => {
+const UserModal = (props: { openPopUp: any }) => {
     const style = {
         position: 'absolute',
         top: '50%',
@@ -26,7 +26,7 @@ const UserModal = (props:{openPopUp:any}) => {
     const [address, setAddress] = useState<string>('');
     const [role, setRole] = useState<string>('');
     const [phoneNo, setPhoneNo] = useState<string>();
-     // eslint-disable-next-line
+    // eslint-disable-next-line
 
 
 
@@ -58,7 +58,7 @@ const UserModal = (props:{openPopUp:any}) => {
             setOpen(false)
         }
 
-     
+
     };
     const reset = () => {
         setName('');
@@ -70,9 +70,9 @@ const UserModal = (props:{openPopUp:any}) => {
     const handleOpen = () => setOpen(true);
     const HandleClose = () => {
         setOpen(false)
-       
+
     }
- 
+
 
     return (
 
@@ -154,35 +154,36 @@ const UserModal = (props:{openPopUp:any}) => {
         </Fragment>
     )
 }
-
+interface User {
+    role: string;
+    name:string
+}
 
 const Admin = () => {
     const navigate = useNavigate()
-    const [user, setUser] = useState([]);
-
-
-
+    const [user, setUser] = useState<User[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const pageSize = 10
 
 
     useEffect(() => {
-        async function fetchUser() {
-            await axios.get(`${URI}/api/users`, {
-                headers: {
-                    'Authorization': localStorage.getItem('token')
-                }
-            }).then(res => res.data.user)
-                .then(
-                    (users) => {
-                        setUser(users)
-                    },
-                    (error) => {
-                        toast.error(error)
+        const fetchdata = async () => {
+            try {
+                const response = await axios.get(`${URI}/api/users?page=${currentPage}&pageSize=${pageSize}`, {
+                    headers: {
+                        'Authorization': localStorage.getItem('token')
                     }
-                )
-
+                });
+                const { user,total } = response.data;
+                setTotalPages(total);
+                setUser(user);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
-        fetchUser();
-    }, []);
+        fetchdata();
+    }, [currentPage,pageSize]);
 
     const logoutHandler = async (e: any) => {
         e.preventDefault();
@@ -197,7 +198,7 @@ const Admin = () => {
             navigate('/')
         }
     }
-    const openPopUp = async() => {
+    const openPopUp = async () => {
         await axios.get(`${URI}/api/users`, {
             headers: {
                 'Authorization': localStorage.getItem('token')
@@ -211,25 +212,56 @@ const Admin = () => {
                     toast.error(error)
                 }
             )
+    };
+    const prevDisabled = currentPage === 1;
+    const nextDisabled = currentPage === totalPages;
+    const handlePageChange = (newPage: any) => {
+        setCurrentPage(newPage)
     }
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1)
+        }
+    }
+    
 
+    const handleSort = () =>{
+       let data = [...user]
+       if(data.length>0){
+         let result = data.sort((a,b)=>a.name.localeCompare(b.name))
+       
+         setUser(result)
+       }
+   }
+   const handleRole = () =>{
+    let data = [...user]
+    if(data.length>0){
+      let result = data.sort((a,b)=>b.role.localeCompare(a.role)) 
+      setUser(result)
+    }
+   }
     return (
         <Fragment>
             <div className="adminContainer">
                 <h3 className="adminheading">SHOP MANAGEMENT ADMIN
                     <button className='admbtn' onClick={logoutHandler}>Logout</button></h3>
                 <div className="maincontainer">
-                    <UserModal openPopUp={openPopUp}/>
+                    <UserModal openPopUp={openPopUp} />
 
                     <button className='register' id='registers' >AddUser</button>
                     <div className="tab">
                         <h3>User Records</h3>
                         <table className='admintable'>
-                            <tr>
-                                <th>Name</th>
+                            <tr style={{cursor:'pointer'}}>
+                                <th onClick={handleSort}>Name</th>
                                 <th>Email</th>
                                 <th>Address</th>
-                                <th>Role</th>
+                                <th onClick={handleRole}>Role</th>
                                 <th>PhoneNo</th>
                             </tr>
                             <tbody>
@@ -246,6 +278,30 @@ const Admin = () => {
                                 }
                             </tbody>
                         </table>
+                        <div className="footer">
+                            <button
+                                className='prev'
+                                onClick={handlePreviousPage}
+                                disabled={prevDisabled}
+                            >Prev</button>
+                            <div className="pages">
+                                {
+                                    Array.from({ length: totalPages }, (_, i) => (
+                                        <button
+                                            key={i}
+                                            disabled={i + 1 === currentPage}
+                                            autoFocus
+                                            onClick={() => handlePageChange(i + 1)}
+                                        >{i + 1}</button>
+                                    ))
+                                }
+                            </div>
+                            <button
+                                className='nexts'
+                                onClick={handleNextPage}
+                                disabled={nextDisabled}
+                            >Next</button>
+                        </div>
                     </div>
                 </div>
             </div>

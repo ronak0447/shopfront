@@ -40,12 +40,14 @@ form > div > input {
     padding-left: 2%;
     outline: none;
     border: none;
+    background-color: gainsboro;
+    cursor: pointer;
 }
 .loginbtn {
     margin-top: 20%;
     width: 50%;
     height: 3.5vh;
-    cursor: pointer;
+    cursor: progress;
     border: none;
     border-radius: 2px;
     outline: none;

@@ -73,27 +73,33 @@ export const getAllProducts = async(req,res)=>{
    try {
     const keyword = req.query.keyword || "";
     const category = req.query.category || "";
+    const pageNumber = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
 
-    const resultPerPage = 10;
-    const productsCount = await Product.countDocuments();
+    const skip = (pageNumber - 1) * pageSize;
+
     const product = await  Product.find({
         productname:{
             $regex:keyword,
             $options:"i",
         },
         category:{
-            $regex:category,
+            $regex:category,    
             $options:"i",
         }
-    }).sort({createdAt:-1,productname:1});
+    }).sort({createdAt:-1,productname:1})
+      .skip(skip).limit(pageSize).exec();
 
+    const totalCount = await Product.countDocuments().exec();
+    const noOfPage = Math.ceil(totalCount/pageSize)
     if(!product){sendAuth(res,null,'Product Not Found',404,true);
-    return;}
-    res.status(200).json({
+    return;} 
+    res.status(200).json({ 
         success:true,
+        page: pageNumber,
+        pageSize,
+        total: noOfPage, 
         product,
-        productsCount,
-        resultPerPage
     });
    } catch (error) {
     res.status(500).json({
